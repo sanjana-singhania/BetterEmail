@@ -104,7 +104,7 @@ def call_llm_for_scheduling_intent(body):
     # Craft a more specific prompt that emphasizes scheduling-related content
     prompt = [
         {"role": "system", "content": f'''Analyze the following email and determine if it is a scheduling or meeting-related request.
-        If it is, extract any date, time, or location information about the meeting. THIS CURRENT YEAR IS 2024. Please format the output as: "This email is a scheduling or a meeting-related request.\n START DATETIME:\n END DATEIME:\n LOCATION:". PLEASE FORMAT DATES AND TIMES IN ISO FORMAT. IF NO LOCATION IS SPECIFIED, WRITE N/A If it is not related 
+        If it is, extract any date, time, or location information about the meeting. THIS CURRENT YEAR IS {datetime.now().year}. Please format the output as: "This email is a scheduling or a meeting-related request.\n START DATETIME:\n END DATEIME:\n LOCATION:". PLEASE FORMAT DATES AND TIMES IN ISO FORMAT. IF NO LOCATION IS SPECIFIED, WRITE N/A If it is not related 
         to scheduling, simply respond with 'not schedule-related'.\n\n
         "Email Body:\n{body}'''},
     ]
