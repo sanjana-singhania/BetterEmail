@@ -10,12 +10,14 @@ def generateRescheduleEmail(email, name, unavailability, emailsentdate, recipien
 
     prompt = [
         {"role": "system", "content": f"""
+        You are trying to add your contact {recipientName} to your schedule.
         Today is {now}. 
-        You are busy and unavailable during the times {unavailability}.
+        You are busy during the times {unavailability}.
         You received this email related to scheduling on {emailsentdate}: {email} \n
         Your name is {name}.
-        Send a brief and highly-professional email to {recipientName} to reschedule for another time when you aren't unavailable.
-        """},
+        Send a brief and professional email to {recipientName} so that they can schedule for a time when you're available.
+        If the request involves looking to schedule at some point within an open period like a full week, instead ask them to reach out with a time that works for them.
+        BE BRIEF"""},
     ]
 
     payload = {
