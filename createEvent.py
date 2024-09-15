@@ -1,13 +1,11 @@
-import datetime
 
-def create_google_calendar_event(service, event_name, event_date, start_time, end_time, description):
+def create_google_calendar_event(service, event_name, start_datetime, end_datetime, description):
     """
     Creates an event in the Google Calendar.
 
     Args:
         service: Authorized Google Calendar API service instance.
         event_name (str): The name of the event.
-        event_date (str): The date of the event (YYYY-MM-DD).
         start_time (str): Start time of the event (HH:MM, 24-hour format).
         end_time (str): End time of the event (HH:MM, 24-hour format).
         description (str): Description of the event.
@@ -15,10 +13,6 @@ def create_google_calendar_event(service, event_name, event_date, start_time, en
     Returns:
         event: The created Google Calendar event.
     """
-    
-    # Combine event date and times into the right format for Google Calendar
-    start_datetime = f"{event_date}T{start_time}:00"
-    end_datetime = f"{event_date}T{end_time}:00"
 
     # Format the event data
     event = {

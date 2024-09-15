@@ -1,6 +1,4 @@
 import requests
-import sys
-from datetime import date
 
 MODEL_ID = "8w6yyp2q"
 BASETEN_API_KEY = "YMKFudUr.FcjOTi13DlaR3ZtCbBIumoXeqFJy25yx" # Gotten from Discord
