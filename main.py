@@ -25,7 +25,7 @@ BASETEN_API_KEY = "YMKFudUr.FcjOTi13DlaR3ZtCbBIumoXeqFJy25yx"
 
 def authenticate():
     """Handles OAuth2 authentication and returns service objects for Gmail and Calendar."""
-    creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+    creds = None
     # Load existing credentials from token.json
     if os.path.exists('token.json'):
         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
