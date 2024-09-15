@@ -35,7 +35,7 @@ def generateRescheduleEmail(email, name, unavailability, emailsentdate, recipien
     # Create a string for the tokens being generated checking the email
     response = ""
     for content in res.iter_content():
-        a += (content.decode("utf-8"))    
+        response += (content.decode("utf-8"))    
     
     return(response)
 
@@ -70,6 +70,6 @@ def generateConfirmationEmail(email, name, unavailability, emailsentdate, recipi
     # Create a string for the tokens being generated checking the email
     response = ""
     for content in res.iter_content():
-        a += (content.decode("utf-8"))
+        response += (content.decode("utf-8"))
     
     return(response)
