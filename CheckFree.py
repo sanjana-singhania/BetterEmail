@@ -37,7 +37,9 @@ def checkFree(email, unavailability, emailsentdate):
         a += (content.decode("utf-8"))
 
     if a == "yes":
+        #checkFree is True and your schedule is free at that time
         return True
 
     else:
+        #checkFree is False and your schedule is not open at that time
         return False
