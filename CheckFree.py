@@ -64,5 +64,11 @@ def checkFree(email, unavailability, emailsentdate):
         return start_time, end_time
 
     else:
-        #checkFree is False and your schedule is not open at that time
         return False
+
+print(checkFree("""
+Clarification: despite the previous email's preview text, the meeting time remains the same, 12:00 PM - 2:00 PM on Wednesday. However, please take note of the location changes detailed in the previous email.
+Looking forward to seeing everyone tomorrow!
+Best regards,
+Hung Le""","6-8pm, 8-10pm",
+"[September 18, 2024, Wednesday, 10:00am to 11:00am]"))
