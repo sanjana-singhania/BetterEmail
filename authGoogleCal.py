@@ -5,16 +5,20 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 
-# Scopes define the access your app needs (in this case, read access to Google Calendar)
-SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
+SCOPES = [
+    'https://www.googleapis.com/auth/calendar.readonly',  
+    'https://www.googleapis.com/auth/calendar.events',    
+    'https://www.googleapis.com/auth/gmail.readonly',     
+    'https://www.googleapis.com/auth/gmail.compose',      
+    'https://www.googleapis.com/auth/gmail.modify'        
+]
 
-def authenticate_google_calendar():
+def authenticate_google_services():
     creds = None
     # The token.json stores the user's access and refresh tokens
     if os.path.exists('token.json'):
         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
     
-    # If there are no valid credentials, ask the user to log in
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(google.auth.transport.requests.Request())
@@ -25,10 +29,8 @@ def authenticate_google_calendar():
         with open('token.json', 'w') as token:
             token.write(creds.to_json())
 
-    # Build the service object using the credentials
-    service = build('calendar', 'v3', credentials=creds)
-    return service
+    # Build service objects using the credentials
+    calendar_service = build('calendar', 'v3', credentials=creds)
+    gmail_service = build('gmail', 'v1', credentials=creds)
 
-# Now you can call your function to fetch events
-# service = authenticate_google_calendar()
-# get_google_calendar_events(service, "2024-09-14")
+    return calendar_service, gmail_service
