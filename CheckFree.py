@@ -37,8 +37,31 @@ def checkFree(email, unavailability, emailsentdate):
         a += (content.decode("utf-8"))
 
     if a == "yes":
-        #checkFree is True and your schedule is free at that time
-        return True
+        # find and store the time of the event mentioned in the email by asking the LLM to do it
+        prompt1 = [
+            {"role": "system", "content": f"""
+            Today is {now}. 
+            You are busy and unavailable during the times {unavailability}.
+            You received this email related to scheduling on {emailsentdate}: {email} \n
+            Respond with ONLY the time of the event mentioned in the email in the format [Hour:Minuteam to Hour:Minutepm].
+            """},
+        ]
+        payload1 = {
+        "messages": prompt1,
+        "stream": True,
+        "max_tokens": 4098,
+        "temperature": 0.9
+        }
+        res1 = requests.post(
+        f"https://model-{MODEL_ID}.api.baseten.co/production/predict",
+        headers={"Authorization": f"Api-Key {BASETEN_API_KEY}"},
+        json=payload1,
+        stream=False
+        )
+        # make 2 string variables, the first one is the start time and the second one is the end time
+        start_time, end_time = res1.text.split(" to ")
+        
+        return start_time, end_time
 
     else:
         #checkFree is False and your schedule is not open at that time
