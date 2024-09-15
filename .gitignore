@@ -1,3 +1,4 @@
 ## secret keys for google auth
 credentials.json
 token.json
+__pycache__
