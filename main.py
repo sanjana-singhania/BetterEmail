@@ -104,7 +104,7 @@ def call_llm_for_scheduling_intent(body):
     # Craft a more specific prompt that emphasizes scheduling-related content
     prompt = [
         {"role": "system", "content": f'''Analyze the following email and determine if it is a scheduling or meeting-related request.
-        If it is, extract any date, time, or location information about the meeting. THIS CURRENT YEAR IS {datetime.now().year}. Please format the output as: "This email is a scheduling or a meeting-related request.\n START DATETIME:\n END DATEIME:\n LOCATION:". PLEASE FORMAT DATES AND TIMES IN ISO FORMAT. IF NO LOCATION IS SPECIFIED, WRITE N/A If it is not related 
+        If it is, extract any date, time, or location information about the meeting. THIS CURRENT YEAR IS {datetime.now().year}. THE CURRENT MONTH IS {datetime.now().month}. THE CURRENT DAY IS {datetime.now().day} THE CURRENT HOUR IS {datetime.now().hour}. Please format the output as: "This email is a scheduling or a meeting-related request.\n START DATETIME:\n END DATEIME:\n LOCATION:". PLEASE FORMAT DATES AND TIMES IN ISO FORMAT. IF NO LOCATION IS SPECIFIED, WRITE N/A If it is not related 
         to scheduling, simply respond with 'not schedule-related'.\n\n
         "Email Body:\n{body}'''},
     ]
@@ -205,11 +205,32 @@ def main():
         available_time = find_available_time(calendar_service, llm_output[1])
         if available_time:
             # Schedule the meeting and notify the sender
-            create_google_calendar_event(calendar_service, "Scheduled Meeting", llm_output[1], llm_output[2], llm_output[3])
-            schedule_meeting(calendar_service, available_time)
-            send_response_email(gmail_service, sender, recipient, "Meeting Scheduled", f"Your meeting has been scheduled for {available_time}.")
+            #meet = create_google_calendar_event(calendar_service, "Scheduled Meeting", llm_output[1], llm_output[2], llm_output[3])
+            meet = schedule_meeting(calendar_service, available_time)
+            
+            # =====
+            url = f"https://model-{MODEL_ID}.api.baseten.co/production/predict"
+            headers = {"Authorization": f"Api-Key {BASETEN_API_KEY}"}
+            
+            # Craft a more specific prompt that emphasizes scheduling-related content
+            prompt = [
+                {"role": "system", "content": f'''You are replying to a scheduling request saying that the meeting has been scheduled. Please format the output as: "Hello, \n The meeting has been scheduled for {available_time}. Here is a link to the meeting:{meet['htmlLink']} \n Thank you! \n I am looking forward to speaking with you."'''},
+            ]
+            
+            payload = {
+                "messages": prompt,
+                "stream": True,
+                "max_tokens": 4098,
+                "temperature": 0.9
+            }
+            response = requests.post(url, headers=headers, json=payload, stream=False)
+    
+            body_response = ""
+            for content in response.iter_content():
+                body_response += content.decode('utf-8')
+            send_response_email(gmail_service, sender, recipient, "Meeting Scheduled", body_response)
         else:
-            send_response_email(gmail_service, sender, recipient, "No Available Time", "No available time slots found.")
+            send_response_email(gmail_service, sender, recipient, "Hello, \n I am sorry, but I am not able to schedule your meeting at the time that you requested. \n Please let me know if you have any other times that you would be available to chat! \n Thank you!")
     else:
         print("no scheduling intent detected!")
         # No scheduling intent detected by LLM
